@@ -3,18 +3,19 @@ content inside is too long.
 
 
 # Sample Usage
-<code>
-    //Single line
-    $clamp(myHeader, {clamp: 1});
-    
-    //Multi-line
-    $clamp(myHeader, {clamp: 3});
-    
-    //Auto-clamp based on available height
-    $clamp(myParagraph, {clamp: 'auto'});
 
-    //Auto-clamp based on a fixed element height
-    $clamp(myParagraph, {clamp: '35px'});
+<code>
+//Single line
+$clamp(myHeader, {clamp: 1});
+
+//Multi-line
+$clamp(myHeader, {clamp: 3});
+
+//Auto-clamp based on available height
+$clamp(myParagraph, {clamp: 'auto'});
+
+//Auto-clamp based on a fixed element height
+$clamp(myParagraph, {clamp: '35px'});
 </code>
 
 The $clamp method is the primary way of interacting with Clamp.js, and it takes two
