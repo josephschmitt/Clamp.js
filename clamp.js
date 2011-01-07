@@ -19,7 +19,8 @@
             win = window,
             opt = {
                 clamp:              options.clamp || 2,
-                useNativeClamp:     typeof(options.useNativeClamp) != 'undefined' ? options.useNativeClamp : true
+                useNativeClamp:     typeof(options.useNativeClamp) != 'undefined' ? options.useNativeClamp : true,
+                animate:            options.animate || false
             },
 
             sty = element.style,
@@ -121,9 +122,14 @@
             applyEllipsis(lastChild);
             
             if (element.clientHeight > maxHeight) {
-                // setTimeout(function() {
+                if (opt.animate) {
+                    setTimeout(function() {
+                        truncate(maxHeight);
+                    }, 1);
+                }
+                else {
                     truncate(maxHeight);
-                // }, 1);
+                }
             }
         }
 
