@@ -3,7 +3,6 @@ content inside is too long.
 
 
 # Sample Usage
-
 <code>
     //Single line
     $clamp(myHeader, {clamp: 1});
