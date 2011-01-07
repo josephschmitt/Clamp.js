@@ -4,7 +4,7 @@ content inside is too long.
 
 # Sample Usage
 
-<code>
+<pre>
     //Single line
     $clamp(myHeader, {clamp: 1});
     
@@ -16,7 +16,7 @@ content inside is too long.
 
     //Auto-clamp based on a fixed element height
     $clamp(myParagraph, {clamp: '35px'});
-</code>
+</pre>
 
 The $clamp method is the primary way of interacting with Clamp.js, and it takes two
 arguments. The first is the element which should be clamped, and the second is an
