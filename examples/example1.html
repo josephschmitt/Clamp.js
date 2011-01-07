@@ -6,16 +6,19 @@
 </head>
 <body>
     <style>
-        p {
+        body {
             width: 300px;
-            height: 35px;
         }
     </style>
+    <h1>Curabitur magna lectus, cursus at euismod sed, aliquet a lectus. Vivamus ac magna purus, in eleifend eros.</h1>
     <p>Quisque pellentesque dui sit amet nisl sollicitudin faucibus. Ut est mauris, vestibulum ullamcorper feugiat consectetur, ullamcorper eu lorem. Mauris congue convallis felis sit amet scelerisque. Etiam sed sodales orci. Ut porta massa commodo turpis dictum suscipit. Quisque sit amet metus eget arcu lacinia pellentesque. Aliquam aliquam tortor nec odio tempus non pharetra ipsum ultricies. Aenean pretium tristique orci vitae tempus. Sed vitae quam ut felis aliquam blandit nec et odio. Mauris at magna odio, at mattis risus. Phasellus eu enim mi, sit amet hendrerit est. Integer egestas consectetur blandit. Etiam odio nibh, fermentum non venenatis nec, dictum vel ligula. Quisque rutrum imperdiet arcu at ultricies. Integer in diam ut elit euismod posuere et id sapien. Cras ligula leo, hendrerit vitae sagittis nec, commodo sed lacus. In aliquam pretium mauris sed ullamcorper. Phasellus fermentum iaculis massa ac condimentum. Ut nisl turpis, vulputate in rhoncus sed, elementum eget massa. Sed a diam dui, in iaculis felis.</p>
     <script src="../clamp.js"></script>
     <script>
-        var paragraph = document.getElementsByTagName('body')[0].getElementsByTagName('p')[0];
-        $clamp(paragraph, {clamp: 'auto'});
+        var header = document.getElementsByTagName('body')[0].getElementsByTagName('h1')[0],
+            paragraph = document.getElementsByTagName('body')[0].getElementsByTagName('p')[0];
+            
+        $clamp(header, {clamp: 1});
+        $clamp(paragraph, {clamp: 10});
     </script>
 </body>
 </html>
