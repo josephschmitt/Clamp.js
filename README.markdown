@@ -7,20 +7,13 @@ content inside is too long.
 <code>
     //Single line
     $clamp(myHeader, {clamp: 1});
-</code>
-
-<code>
+    
     //Multi-line
     $clamp(myHeader, {clamp: 3});
-</code>
-
-
-<code>
+    
     //Auto-clamp based on available height
     $clamp(myParagraph, {clamp: 'auto'});
-</code>
 
-<code>
     //Auto-clamp based on a fixed element height
     $clamp(myParagraph, {clamp: '35px'});
 </code>
