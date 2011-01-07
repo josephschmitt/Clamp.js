@@ -1,5 +1,5 @@
 /*!
-* Clamp.JS 0.1
+* Clamp.js 0.1
 *
 * Copyright 2011, Joseph Schmitt http://reusablebits.com, http://josephschmitt.me
 * Released under the WTFPL license
@@ -87,35 +87,48 @@
             if (lh == 'normal') {
                 // Normal line heights vary from browser to browser. The spec recommends
                 // a value between 1.0 and 1.2 of the font size. Using 1.1 to split the diff.
-                lh = parseInt(computeStyle(elem, 'font-size')) * 1.1;
+                lh = parseInt(computeStyle(elem, 'font-size')) * 1.2;
             }
             return parseInt(lh);
         }
 
 
 // MEAT AND POTATOES (MMMM, POTATOES...) ______________________________________
-
+        var attempts = 1000;
         /**
          * Removes one character at a time from the text until its width or
          * height is beneath the passed-in max param.
          */
-        function truncate() {
-            if (element[property] <= max ) {
-                return false;
-            }
-
-            while (self[property] > max) {
-                self.innerText = self.innerText.substr(0, self.innerText.length-1);
-                if (self.innerText == '' || self.innerText.length == 0) {
-                    return false;
+        function truncate(maxHeight) {
+            if (!maxHeight) {return;}
+            
+            function getLastChild(elem) {
+                if (elem.children.length > 0) {
+                    return getLastChild(Array.prototype.slice.call(elem.children).pop());
+                }
+                else if (!elem.lastChild || !elem.lastChild.nodeValue || elem.lastChild.nodeValue == '' || elem.lastChild.nodeValue == '…') {
+                    elem.parentNode.removeChild(elem);
+                    return getLastChild(element);
+                }
+                else {
+                    return elem.lastChild;
                 }
             }
-
-            applyEllipsis();
+            
+            var lastChild = getLastChild(element);
+            
+            lastChild.nodeValue = lastChild.nodeValue.substr(0, lastChild.length-1);
+            applyEllipsis(lastChild);
+            
+            if (element.clientHeight > maxHeight) {
+                // setTimeout(function() {
+                    truncate(maxHeight);
+                // }, 1);
+            }
         }
 
-        function applyEllipsis() {
-            self.innerText = self.innerText.substr(0, self.innerText.length-3) + '...';
+        function applyEllipsis(elem) {
+            elem.nodeValue = elem.nodeValue.substr(0, elem.nodeValue.length-3) + '…';
         }
 
 
@@ -136,11 +149,12 @@
             sty.webkitLineClamp = clampValue;
 
             if (isCSSValue) {
-                sty.height = opt.clamp;
+                sty.height = opt.clamp + 'px';
             }
         }
         else {
-            
+            var height = getMaxHeight(clampValue);
+            truncate(height);
         }
     }
 
