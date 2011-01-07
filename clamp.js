@@ -8,34 +8,6 @@
 
 (function(){
     /**
-     * Return the current style for an element.
-     * @param {HTMLElement} elem The element to compute.
-     * @param {string} prop The style property.
-     * @returns {number}
-     */
-    function computeStyle(elem, prop) {
-        var win = window;
-        if (!win.getComputedStyle) {
-            win.getComputedStyle = function(el, pseudo) {
-                this.el = el;
-                this.getPropertyValue = function(prop) {
-                    var re = /(\-([a-z]){1})/g;
-                    if (prop == 'float') prop = 'styleFloat';
-                    if (re.test(prop)) {
-                        prop = prop.replace(re, function () {
-                            return arguments[2].toUpperCase();
-                        });
-                    }
-                    return el.currentStyle && el.currentStyle[prop] ? el.currentStyle[prop] : null;
-                }
-                return this;
-            }
-        }
-
-        return win.getComputedStyle(elem, null).getPropertyValue(prop);
-    }
-
-    /**
      * Clamps a text node.
      * @param {HTMLElement} element. Element containing the text node to clamp.
      * @param {Object} options. Options to pass to the clamper.
@@ -44,23 +16,54 @@
         options = options || {};
 
         var self = this,
+            win = window,
             opt = {
-                clamp: options.clamp        || 2
+                clamp:              options.clamp               || 2,
+                useNativeClamp:     options.useNativeClamp      || true
             },
+
             original = element.innerHTML,
 
             hasNativeClamp = typeof(element.style.webkitLineClamp) != 'undefined',
-            clampValue = opt.clamp === 'auto' ? getMaxLines() : opt.clamp;
+            clampValue = opt.clamp,
+            isCSSValue = clampValue.indexOf && (clampValue.indexOf('px') > -1 || clampValue.indexOf('em') > -1);
 
 
-    // UTILITY FUNCTIONS __________________________________________________________
+// UTILITY FUNCTIONS __________________________________________________________
+
+        /**
+         * Return the current style for an element.
+         * @param {HTMLElement} elem The element to compute.
+         * @param {string} prop The style property.
+         * @returns {number}
+         */
+        function computeStyle(elem, prop) {
+            if (!win.getComputedStyle) {
+                win.getComputedStyle = function(el, pseudo) {
+                    this.el = el;
+                    this.getPropertyValue = function(prop) {
+                        var re = /(\-([a-z]){1})/g;
+                        if (prop == 'float') prop = 'styleFloat';
+                        if (re.test(prop)) {
+                            prop = prop.replace(re, function () {
+                                return arguments[2].toUpperCase();
+                            });
+                        }
+                        return el.currentStyle && el.currentStyle[prop] ? el.currentStyle[prop] : null;
+                    }
+                    return this;
+                }
+            }
+
+            return win.getComputedStyle(elem, null).getPropertyValue(prop);
+        }
 
         /**
          * Returns the maximum number of lines of text that should be rendered based
          * on the current height of the element and the line-height of the text.
          */
-        function getMaxLines() {
-            var availHeight = element.clientHeight,
+        function getMaxLines(height) {
+            var availHeight = height || element.clientHeight,
                 lineHeight = getLineHeight(element);
 
             return Math.max(Math.floor(availHeight/lineHeight), 0);
@@ -89,7 +92,7 @@
         }
 
 
-    // MEAT AND POTATOES (MMMM, POTATOES...) ______________________________________
+// MEAT AND POTATOES (MMMM, POTATOES...) ______________________________________
 
         /**
          * Removes one character at a time from the text until its width or
@@ -115,7 +118,14 @@
         }
 
 
-    // CONSTRUCTOR ________________________________________________________________
+// CONSTRUCTOR ________________________________________________________________
+
+        if (clampValue == 'auto') {
+            clampValue = getMaxLines();
+        }
+        else if (isCSSValue) {
+            clampValue = getMaxLines(parseInt(clampValue));
+        }
 
         if (hasNativeClamp) {
             var sty = element.style;
@@ -125,11 +135,15 @@
             sty.webkitBoxOrient = 'vertical';
             sty.display = '-webkit-box';
             sty.webkitLineClamp = clampValue;
+
+            if (isCSSValue) {
+                sty.height = opt.clamp;
+            }
         }
         else {
 
         }
     }
-    
+
     window.$clamp = clamp;
 })();
