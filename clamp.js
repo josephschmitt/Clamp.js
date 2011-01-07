@@ -1,7 +1,7 @@
 /*!
 * Clamp.JS 0.1
 *
-* Copyright 2010, Joseph Schmitt http://reusablebits.com, http://josephschmitt.me
+* Copyright 2011, Joseph Schmitt http://reusablebits.com, http://josephschmitt.me
 * Released under the WTFPL license
 * http://sam.zoy.org/wtfpl/
 */
