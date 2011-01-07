@@ -1,0 +1,14 @@
+Clamps an HTML element by adding ellipsis to it if the content inside is too long.
+
+USAGE:
+    //Single line
+    $clamp(myHeader, {clamp: 1});
+    
+    //Multi-line
+    $clamp(myHeader, {clamp: 3});
+    
+    //Auto-clamp based on available height
+    $clamp(myParagraph, {clamp: 'auto'});
+    
+    //Auto-clamp based on a fixed element height
+    $clamp(myParagraph, {clamp: '35px'});
