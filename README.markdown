@@ -4,16 +4,16 @@ content inside is too long.
 
 # Sample Usage
 
-//Single line
+//Single line  
 <code>$clamp(myHeader, {clamp: 1});</code>
 
-//Multi-line
+//Multi-line  
 <code>$clamp(myHeader, {clamp: 3});</code>
 
-//Auto-clamp based on available height
+//Auto-clamp based on available height  
 <code>$clamp(myParagraph, {clamp: 'auto'});</code>
 
-//Auto-clamp based on a fixed element height
+//Auto-clamp based on a fixed element height  
 <code>$clamp(myParagraph, {clamp: '35px'});</code>
 
 The $clamp method is the primary way of interacting with Clamp.js, and it takes two
