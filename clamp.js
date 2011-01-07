@@ -22,9 +22,10 @@
                 useNativeClamp:     options.useNativeClamp      || true
             },
 
+            sty = element.style,
             original = element.innerHTML,
 
-            hasNativeClamp = typeof(element.style.webkitLineClamp) != 'undefined',
+            supportsNativeClamp = typeof(element.style.webkitLineClamp) != 'undefined',
             clampValue = opt.clamp,
             isCSSValue = clampValue.indexOf && (clampValue.indexOf('px') > -1 || clampValue.indexOf('em') > -1);
 
@@ -127,9 +128,7 @@
             clampValue = getMaxLines(parseInt(clampValue));
         }
 
-        if (hasNativeClamp) {
-            var sty = element.style;
-
+        if (supportsNativeClamp) {
             sty.overflow = 'hidden';
             sty.textOverflow = 'ellipsis';
             sty.webkitBoxOrient = 'vertical';
@@ -141,7 +140,7 @@
             }
         }
         else {
-
+            
         }
     }
 
