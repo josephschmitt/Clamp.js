@@ -18,8 +18,8 @@
         var self = this,
             win = window,
             opt = {
-                clamp:              options.clamp               || 2,
-                useNativeClamp:     options.useNativeClamp      || true
+                clamp:              options.clamp || 2,
+                useNativeClamp:     typeof(options.useNativeClamp) != 'undefined' ? options.useNativeClamp : true
             },
 
             sty = element.style,
