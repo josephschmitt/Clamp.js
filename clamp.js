@@ -128,7 +128,7 @@
             clampValue = getMaxLines(parseInt(clampValue));
         }
 
-        if (supportsNativeClamp) {
+        if (supportsNativeClamp && opt.useNativeClamp) {
             sty.overflow = 'hidden';
             sty.textOverflow = 'ellipsis';
             sty.webkitBoxOrient = 'vertical';
