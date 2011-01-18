@@ -20,7 +20,7 @@
             opt = {
                 clamp:              options.clamp || 2,
                 useNativeClamp:     typeof(options.useNativeClamp) != 'undefined' ? options.useNativeClamp : true,
-                splitOnChars:       ['.', ' '], //Split on spaces, hyphens, en-dashes, and em-dashes
+                splitOnChars:       ['.', '-', '–', '—', ' '], //Split on sentences, hypens, en-dashes, em-dashes, and words (spaces).
                 animate:            options.animate || false
             },
 
