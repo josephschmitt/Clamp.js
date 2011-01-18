@@ -20,6 +20,7 @@
             opt = {
                 clamp:              options.clamp || 2,
                 useNativeClamp:     typeof(options.useNativeClamp) != 'undefined' ? options.useNativeClamp : true,
+                splitOnChars:       ['.', ' '], //Split on spaces, hyphens, en-dashes, and em-dashes
                 animate:            options.animate || false
             },
 
@@ -95,70 +96,98 @@
 
 
 // MEAT AND POTATOES (MMMM, POTATOES...) ______________________________________
-        var attempts = 5,
-            splitOnWords = true,
-            lastWord;
+        var splitOnChars = opt.splitOnChars.slice(0),
+            splitChar = splitOnChars[0],
+            chunks,
+            lastChunk;
+        
+        /**
+         * Gets an element's last child. That may be another node or a node's contents.
+         */
+        function getLastChild(elem) {
+            if (elem.children.length > 0) {
+                return getLastChild(Array.prototype.slice.call(elem.children).pop());
+            }
+            else if (!elem.lastChild || !elem.lastChild.nodeValue || elem.lastChild.nodeValue == '' || elem.lastChild.nodeValue == '…') {
+                elem.parentNode.removeChild(elem);
+                return getLastChild(element);
+            }
+            else {
+                return elem.lastChild;
+            }
+        }
+        
         /**
          * Removes one character at a time from the text until its width or
          * height is beneath the passed-in max param.
          */
-        function truncate(maxHeight) {
+        function truncate(target, maxHeight) {
             if (!maxHeight) {return;}
             
-            function getLastChild(elem) {
-                if (elem.children.length > 0) {
-                    return getLastChild(Array.prototype.slice.call(elem.children).pop());
+            /**
+             * Resets global variables.
+             */
+            function reset() {
+                splitOnChars = opt.splitOnChars.slice(0);
+                splitChar = splitOnChars[0];
+                chunks = null;
+                lastChunk = null;
+            }
+            
+            var nodeValue = target.nodeValue.replace(/…/, '');
+            
+            //Grab the next chunks
+            if (!chunks) {
+                //If there are more characters to try, grab the next one
+                if (splitOnChars.length > 0) {
+                    splitChar = splitOnChars.shift();
                 }
-                else if (!elem.lastChild || !elem.lastChild.nodeValue || elem.lastChild.nodeValue == '' || elem.lastChild.nodeValue == '…') {
-                    elem.parentNode.removeChild(elem);
-                    return getLastChild(element);
-                }
+                //No characters to chunk by. Go character-by-character
                 else {
-                    return elem.lastChild;
+                    splitChar = '';
                 }
+                
+                chunks = nodeValue.split(splitChar);
             }
             
-            var lastChild = getLastChild(element),
-                phrase = lastChild.nodeValue.split('…').join(''),
-                words = phrase.split(' ');
-            
-            if (splitOnWords) {
-                lastWord = words.pop();
-                phrase = words.join(' ');
+            //If there are chunks left to remove, remove the last one and see if
+            // the nodeValue fits.
+            if (chunks && chunks.length > 1) {
+                lastChunk = chunks.pop();
+                applyEllipsis(target, chunks.join(splitChar));
             }
+            //No more chunks can be removed using this character
             else {
-                phrase = words.join(' ')
-                if (lastWord) {
-                    phrase += ' ' + lastWord;
-                    lastWord = false;
-                }
-                else {
-                    phrase = phrase.substr(0, phrase.length-1);
-                }
+                chunks = null;
             }
-            
-            applyEllipsis(lastChild, phrase);
             
             //It fits
             if (element.clientHeight <= maxHeight) {
-                //Try again, this time splitting on chars
-                if (splitOnWords) {
-                    splitOnWords = false;
+                //More characters to try
+                if (splitOnChars.length >= 0 && splitChar != '') {
+                    applyEllipsis(target, chunks.join(splitChar) + splitChar + lastChunk);
+                    chunks = null;
                 }
-                //Finished
+                //Finished!
                 else {
                     return false;
                 }
             }
+            //Nothing else to do here. Make the target the next node.
+            else if (!chunks && splitChar == '') {
+                applyEllipsis(target, '');
+                target = getLastChild(element);
+                
+                reset();
+            }
             
-            console.log('---------------------');
             if (opt.animate) {
                 setTimeout(function() {
-                    truncate(maxHeight, splitOnWords);
-                }, 1);
+                    truncate(target, maxHeight);
+                }, 10);
             }
             else {
-                truncate(maxHeight, splitOnWords);
+                truncate(target, maxHeight);
             }
         }
         
@@ -193,7 +222,7 @@
         }
         else {
             var height = getMaxHeight(clampValue);
-            truncate(height, true);
+            truncate(getLastChild(element), height);
         }
     }
 
