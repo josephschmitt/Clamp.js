@@ -95,7 +95,9 @@
 
 
 // MEAT AND POTATOES (MMMM, POTATOES...) ______________________________________
-        var attempts = 1000;
+        var attempts = 5,
+            splitOnWords = true,
+            lastWord;
         /**
          * Removes one character at a time from the text until its width or
          * height is beneath the passed-in max param.
@@ -116,25 +118,56 @@
                 }
             }
             
-            var lastChild = getLastChild(element);
+            var lastChild = getLastChild(element),
+                phrase = lastChild.nodeValue.split('…').join(''),
+                words = phrase.split(' ');
             
-            lastChild.nodeValue = lastChild.nodeValue.substr(0, lastChild.length-1);
-            applyEllipsis(lastChild);
-            
-            if (element.clientHeight > maxHeight) {
-                if (opt.animate) {
-                    setTimeout(function() {
-                        truncate(maxHeight);
-                    }, 1);
+            if (splitOnWords) {
+                lastWord = words.pop();
+                phrase = words.join(' ');
+            }
+            else {
+                phrase = words.join(' ')
+                if (lastWord) {
+                    phrase += ' ' + lastWord;
+                    lastWord = false;
                 }
                 else {
-                    truncate(maxHeight);
+                    phrase = phrase.substr(0, phrase.length-1);
                 }
             }
+            
+            applyEllipsis(lastChild, phrase);
+            
+            //It fits
+            if (element.clientHeight <= maxHeight) {
+                //Try again, this time splitting on chars
+                if (splitOnWords) {
+                    splitOnWords = false;
+                }
+                //Finished
+                else {
+                    return false;
+                }
+            }
+            
+            console.log('---------------------');
+            if (opt.animate) {
+                setTimeout(function() {
+                    truncate(maxHeight, splitOnWords);
+                }, 1);
+            }
+            else {
+                truncate(maxHeight, splitOnWords);
+            }
         }
-
-        function applyEllipsis(elem) {
-            elem.nodeValue = elem.nodeValue.substr(0, elem.nodeValue.length-3) + '…';
+        
+        /**
+         * @TODO: remove trailing white space.
+         * @TODO: remove trailing puncuation (especially periods).
+         */
+        function applyEllipsis(elem, str) {
+            elem.nodeValue = str + '…';
         }
 
 
@@ -160,7 +193,7 @@
         }
         else {
             var height = getMaxHeight(clampValue);
-            truncate(height);
+            truncate(height, true);
         }
     }
 
