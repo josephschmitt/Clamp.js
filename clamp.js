@@ -105,13 +105,16 @@
          * Gets an element's last child. That may be another node or a node's contents.
          */
         function getLastChild(elem) {
-            if (elem.children.length > 0) {
+            //Current element has children, need to go deeper and get last child as a text node
+            if (elem.lastChild.children && elem.lastChild.children.length > 0) {
                 return getLastChild(Array.prototype.slice.call(elem.children).pop());
             }
+            //This is the absolute last child, a text node, but something's wrong with it. Remove it and keep trying
             else if (!elem.lastChild || !elem.lastChild.nodeValue || elem.lastChild.nodeValue == '' || elem.lastChild.nodeValue == '…') {
-                elem.parentNode.removeChild(elem);
+                elem.lastChild.parentNode.removeChild(elem.lastChild);
                 return getLastChild(element);
             }
+            //This is the last child we want, return it
             else {
                 return elem.lastChild;
             }
