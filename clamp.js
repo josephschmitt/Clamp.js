@@ -1,5 +1,5 @@
 /*!
-* Clamp.js 0.3
+* Clamp.js 0.2
 *
 * Copyright 2011, Joseph Schmitt http://reusablebits.com, http://josephschmitt.me
 * Released under the WTFPL license
@@ -155,49 +155,55 @@
             
             //If there are chunks left to remove, remove the last one and see if
             // the nodeValue fits.
-            if (chunks && chunks.length > 1) {
+            if (chunks.length > 1) {
+                // console.log('chunks', chunks);
                 lastChunk = chunks.pop();
+                // console.log('lastChunk', lastChunk);
                 applyEllipsis(target, chunks.join(splitChar));
             }
             //No more chunks can be removed using this character
             else {
                 chunks = null;
             }
-            
-            //It fits
-            if (element.clientHeight <= maxHeight) {
-                //More characters to try
-                if (splitOnChars.length >= 0 && splitChar != '') {
-                    applyEllipsis(target, chunks.join(splitChar) + splitChar + lastChunk);
-                    chunks = null;
-                }
-                //Finished!
-                else {
-                    return false;
+
+            //Search produced valid chunks
+            if (chunks) {
+                //It fits
+                if (element.clientHeight <= maxHeight) {
+                    //There's still more characters to try splitting on, not quite done yet
+                    if (splitOnChars.length >= 0 && splitChar != '') {
+                        applyEllipsis(target, chunks.join(splitChar) + splitChar + lastChunk);
+                        chunks = null;
+                    }
+                    //Finished!
+                    else {
+                        return false;
+                    }
                 }
             }
-            //Nothing else to do here. Make the target the next node.
-            else if (!chunks && splitChar == '') {
-                applyEllipsis(target, '');
-                target = getLastChild(element);
-                
-                reset();
+            //No valid chunks produced
+            else {
+                //No valid chunks even when splitting by letter, time to move
+                //on to the next node
+                if (splitChar == '') {
+                    applyEllipsis(target, '');
+                    target = getLastChild(element);
+                    
+                    reset();
+                }
             }
             
+            //If you get here it means still too big, let's keep truncating
             if (opt.animate) {
                 setTimeout(function() {
                     truncate(target, maxHeight);
-                }, 10);
+                }, opt.animate === true ? 10 : opt.animate);
             }
             else {
                 truncate(target, maxHeight);
             }
         }
         
-        /**
-         * @TODO: remove trailing white space.
-         * @TODO: remove trailing puncuation (especially periods).
-         */
         function applyEllipsis(elem, str) {
             elem.nodeValue = str + '…';
         }
