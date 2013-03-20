@@ -71,5 +71,5 @@ if (clampUtils.getLineHeight(headline) * 2 === headline.clientHeight) {
 } else {
 	subheadNumLines = 2;
 }
-$clamp(subheadline, { lines: dekLines});
+$clamp(subheadline, { lines: subheadNumLines});
 </pre>
