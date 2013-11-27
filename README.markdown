@@ -42,7 +42,7 @@ based solution.
 **truncationChar** _(String)_. The character to insert at the end of the HTML element
 after truncation is performed. This defaults to an ellipsis (…).
 
-**truncationHTML** _(String_. A string of HTML to insert before the truncation character.
+**truncationHTML** _(String)_. A string of HTML to insert before the truncation character.
 This is useful if you'd like to add a "Read more" link or some such thing at the end of
 your clamped node.
 
