@@ -39,6 +39,13 @@ in a supported browser (ie. Webkit). It defaults to true if you're using Webkit,
 but it can behave wonky sometimes so you can set it to false to use the JavaScript-
 based solution.
 
+**truncationChar** _(String)_. The character to insert at the end of the HTML element
+after truncation is performed. This defaults to an ellipsis (…).
+
+**truncationHTML** _(String_. A string of HTML to insert before the truncation character.
+This is useful if you'd like to add a "Read more" link or some such thing at the end of
+your clamped node.
+
 **splitOnChars** _(Array)_. Determines what characters to use to chunk an element into
 smaller pieces. Version 0.1 of Clamp.js would always remove each individual character
 to check for fit. With v0.2, you now have an option to pass a list of characters it
