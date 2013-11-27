@@ -177,7 +177,7 @@
                     }
                     //Finished!
                     else {
-                        return false;
+                        return element.innerHTML;
                     }
                 }
             }
@@ -200,7 +200,7 @@
                 }, opt.animate === true ? 10 : opt.animate);
             }
             else {
-                truncate(target, maxHeight);
+                return truncate(target, maxHeight);
             }
         }
         
@@ -218,6 +218,7 @@
             clampValue = getMaxLines(parseInt(clampValue));
         }
 
+        var clampedText;
         if (supportsNativeClamp && opt.useNativeClamp) {
             sty.overflow = 'hidden';
             sty.textOverflow = 'ellipsis';
@@ -231,7 +232,12 @@
         }
         else {
             var height = getMaxHeight(clampValue);
-            truncate(getLastChild(element), height);
+            clampedText = truncate(getLastChild(element), height);
+        }
+        
+        return {
+            'original': originalText,
+            'clamped': clampedText
         }
     }
 
