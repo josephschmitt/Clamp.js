@@ -1,5 +1,5 @@
 /*!
-* Clamp.js 0.5
+* Clamp.js 0.5.1
 *
 * Copyright 2011-2013, Joseph Schmitt http://joe.sh
 * Released under the WTFPL license
@@ -146,10 +146,6 @@
             }
             
             var nodeValue = target.nodeValue.replace(opt.truncationChar, '');
-            if (truncationHTMLContainer) {
-                target.nodeValue = target.nodeValue.replace(opt.truncationChar, '');
-                element.innerHTML = target.nodeValue + ' ' + truncationHTMLContainer.innerHTML + opt.truncationChar;
-            }
             
             //Grab the next chunks
             if (!chunks) {
@@ -176,6 +172,12 @@
             //No more chunks can be removed using this character
             else {
                 chunks = null;
+            }
+            
+            //Insert the custom HTML before the truncation character
+            if (truncationHTMLContainer) {
+                target.nodeValue = target.nodeValue.replace(opt.truncationChar, '');
+                element.innerHTML = target.nodeValue + ' ' + truncationHTMLContainer.innerHTML + opt.truncationChar;
             }
 
             //Search produced valid chunks
