@@ -21,15 +21,23 @@
                 clamp:              options.clamp || 2,
                 useNativeClamp:     typeof(options.useNativeClamp) != 'undefined' ? options.useNativeClamp : true,
                 splitOnChars:       options.splitOnChars || ['.', '-', '–', '—', ' '], //Split on sentences (periods), hypens, en-dashes, em-dashes, and words (spaces).
-                animate:            options.animate || false
+                animate:            options.animate || false,
+                truncationChar:     options.truncationChar || '…',
+                truncationHTML:     options.truncationHTML
             },
 
             sty = element.style,
-            original = element.innerHTML,
+            originalText = element.innerHTML,
 
             supportsNativeClamp = typeof(element.style.webkitLineClamp) != 'undefined',
             clampValue = opt.clamp,
-            isCSSValue = clampValue.indexOf && (clampValue.indexOf('px') > -1 || clampValue.indexOf('em') > -1);
+            isCSSValue = clampValue.indexOf && (clampValue.indexOf('px') > -1 || clampValue.indexOf('em') > -1),
+            truncationHTMLContainer;
+            
+        if (opt.truncationHTML) {
+            truncationHTMLContainer = document.createElement('span');
+            truncationHTMLContainer.innerHTML = opt.truncationHTML;
+        }
 
 
 // UTILITY FUNCTIONS __________________________________________________________
@@ -110,7 +118,7 @@
                 return getLastChild(Array.prototype.slice.call(elem.children).pop());
             }
             //This is the absolute last child, a text node, but something's wrong with it. Remove it and keep trying
-            else if (!elem.lastChild || !elem.lastChild.nodeValue || elem.lastChild.nodeValue == '' || elem.lastChild.nodeValue == '…') {
+            else if (!elem.lastChild || !elem.lastChild.nodeValue || elem.lastChild.nodeValue == '' || elem.lastChild.nodeValue == opt.truncationChar) {
                 elem.lastChild.parentNode.removeChild(elem.lastChild);
                 return getLastChild(element);
             }
@@ -137,7 +145,11 @@
                 lastChunk = null;
             }
             
-            var nodeValue = target.nodeValue.replace(/…/, '');
+            var nodeValue = target.nodeValue.replace(opt.truncationChar, '');
+            if (truncationHTMLContainer) {
+                target.nodeValue = target.nodeValue.replace(opt.truncationChar, '');
+                element.innerHTML = target.nodeValue + ' ' + truncationHTMLContainer.innerHTML + opt.truncationChar;
+            }
             
             //Grab the next chunks
             if (!chunks) {
@@ -205,7 +217,7 @@
         }
         
         function applyEllipsis(elem, str) {
-            elem.nodeValue = str + '…';
+            elem.nodeValue = str + opt.truncationChar;
         }
 
 
