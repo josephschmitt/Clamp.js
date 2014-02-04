@@ -238,7 +238,7 @@
             sty.textOverflow = 'ellipsis';
             sty.webkitBoxOrient = 'vertical';
             sty.display = '-webkit-box';
-            sty.webkitLineClamp = clampValue;
+            sty.webkitLineClamp = clampValue-1;
 
             if (isCSSValue) {
                 sty.height = opt.clamp + 'px';
