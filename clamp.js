@@ -74,7 +74,7 @@
          * on the current height of the element and the line-height of the text.
          */
         function getMaxLines(height) {
-            var availHeight = height || element.clientHeight,
+            var availHeight = height || getElemHeight(element),
                 lineHeight = getLineHeight(element);
 
             return Math.max(Math.floor(availHeight/lineHeight), 0);
@@ -101,6 +101,15 @@
             }
             return parseInt(lh);
         }
+		
+		/**
+         * Returns the height of an element as an integer (max of scroll/offset/client).
+		 * Note: inline elements return 0 for scrollHeight and clientHeight
+         */
+        function getElemHeight(elem) {
+            return Math.max(elem.scrollHeight, elem.offsetHeight, elem.clientHeight);
+        }
+		
 
 
 // MEAT AND POTATOES (MMMM, POTATOES...) ______________________________________
@@ -183,7 +192,7 @@
             //Search produced valid chunks
             if (chunks) {
                 //It fits
-                if (element.clientHeight <= maxHeight) {
+                if (getElemHeight(element) <= maxHeight) {
                     //There's still more characters to try splitting on, not quite done yet
                     if (splitOnChars.length >= 0 && splitChar != '') {
                         applyEllipsis(target, chunks.join(splitChar) + splitChar + lastChunk);
@@ -246,7 +255,7 @@
         }
         else {
             var height = getMaxHeight(clampValue);
-            if (height <= element.clientHeight) {
+            if (height <= getElemHeight(element)) {
                 clampedText = truncate(getLastChild(element), height);
             }
         }
