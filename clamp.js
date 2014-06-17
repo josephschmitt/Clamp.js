@@ -241,7 +241,7 @@
             sty.webkitLineClamp = clampValue;
 
             if (isCSSValue) {
-                sty.height = opt.clamp + 'px';
+                sty.height = opt.clamp;
             }
         }
         else {
