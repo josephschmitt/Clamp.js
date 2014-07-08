@@ -254,8 +254,14 @@
         return {
             'original': originalText,
             'clamped': clampedText
-        }
+        };
     }
 
-    window.$clamp = clamp;
+    if (typeof define === 'function' && define.amd) {
+        define('clamp', [], function() {
+            return clamp;
+        });
+    } else {
+        window.$clamp = clamp;
+    }
 })();
