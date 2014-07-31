@@ -167,7 +167,11 @@
                 // console.log('chunks', chunks);
                 lastChunk = chunks.pop();
                 // console.log('lastChunk', lastChunk);
-                applyEllipsis(target, chunks.join(splitChar));
+                if(element.clientHeight > maxHeight){
+                    applyEllipsis(target, chunks.join(splitChar));
+                } else {
+                    target.nodeValue = chunks.join(splitChar);
+                }
             }
             //No more chunks can be removed using this character
             else {
