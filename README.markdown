@@ -60,3 +60,7 @@ is submitted in the array.
 **animate** _(Boolean)_. Silly little easter-egg that, when set to true, will animate
 removing individual characters from the end of the element until the content fits.
 Defaults to false.
+
+# License
+Clamp.js is copyright 2011-2013, [Joseph Schmitt](http://joe.sh) and is released under the [WTFPL](http://sam.zoy.org/wtfpl/) license
+
