@@ -222,6 +222,16 @@
             elem.nodeValue = str + opt.truncationChar;
         }
 
+        function _styleAdded(className) {
+            var styleAdded = false;
+            for (var s = 0, tag = document.head.querySelectorAll('style'); s < tag.length; s++) {
+                if (tag[s] && tag[s].innerHTML.indexOf(className) !== -1) {
+                    styleAdded = true;
+                    break;
+                }
+            }
+            return styleAdded;
+        }
 
 // CONSTRUCTOR ________________________________________________________________
 
@@ -234,15 +244,29 @@
 
         var clampedText;
         if (supportsNativeClamp && opt.useNativeClamp) {
-            sty.overflow = 'hidden';
-            sty.textOverflow = 'ellipsis';
-            sty.webkitBoxOrient = 'vertical';
-            sty.display = '-webkit-box';
-            sty.webkitLineClamp = clampValue;
-
+            var style = document.createElement('style');
+            var props = {
+                'overflow': 'hidden',
+                'text-overflow': 'ellipsis',
+                '-webkit-box-orient': 'vertical',
+                'display': '-webkit-box',
+                '-webkit-line-clamp': clampValue
+            };
             if (isCSSValue) {
-                sty.height = opt.clamp + 'px';
+                props.height = opt.clamp + 'px';
             }
+
+            var clampStyles = '';
+            for(var p in props) {
+                clampStyles += p + ':' + props[p] + ';';
+            }
+
+            style.innerHTML = '.clamp-styles {' + clampStyles + '}';
+
+            if (!_styleAdded('.clamp-styles')) {
+                document.head.appendChild(style);
+            }
+
         }
         else {
             var height = getMaxHeight(clampValue);
@@ -250,8 +274,22 @@
                 clampedText = truncate(getLastChild(element), height);
             }
         }
+
+        function toggle() {
+            var isClamped = element.className.indexOf('clamp-styles') !== -1;
+            if (isClamped) {
+                element.className = element.className.replace(/clamp\-styles/, '');
+            } else {
+                element.className += ' clamp-styles';
+            }
+            return isClamped;
+        }
+
+        // add clamp-styles class
+        toggle();
         
         return {
+            toggle: toggle,
             'original': originalText,
             'clamped': clampedText
         }

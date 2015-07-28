@@ -16,6 +16,13 @@ $clamp(myParagraph, {clamp: 'auto'});
 
 //Auto-clamp based on a fixed element height
 $clamp(myParagraph, {clamp: '35px'});
+
+// Toggle clamp class
+var clamped = $clamp(myParagraph, {clamp: 'auto'});
+// turn clamp off
+clamped.toggle();
+// turn clamp back on
+clamped.toggle();
 </pre>
 
 The $clamp method is the primary way of interacting with Clamp.js, and it takes two
@@ -60,3 +67,7 @@ is submitted in the array.
 **animate** _(Boolean)_. Silly little easter-egg that, when set to true, will animate
 removing individual characters from the end of the element until the content fits.
 Defaults to false.
+
+# Methods
+
+**toggle** Toggles the ".clamp-styles" class
