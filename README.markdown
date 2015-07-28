@@ -70,4 +70,4 @@ Defaults to false.
 
 # Methods
 
-**toggle** Toggles the ".camp-styles" class
+**toggle** Toggles the ".clamp-styles" class
