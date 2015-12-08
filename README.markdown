@@ -1,3 +1,5 @@
+<img src="http://i.imgur.com/aZcewF7.jpg" width="125">
+
 Clamps (ie. cuts off) an HTML element's content by adding ellipsis to it if the 
 content inside is too long.
 
