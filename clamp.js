@@ -113,6 +113,9 @@
          * Gets an element's last child. That may be another node or a node's contents.
          */
         function getLastChild(elem) {
+            if (!elem.lastChild) {
+                return;
+            }
             //Current element has children, need to go deeper and get last child as a text node
             if (elem.lastChild.children && elem.lastChild.children.length > 0) {
                 return getLastChild(Array.prototype.slice.call(elem.children).pop());
@@ -133,7 +136,7 @@
          * height is beneath the passed-in max param.
          */
         function truncate(target, maxHeight) {
-            if (!maxHeight) {return;}
+            if (!target || !maxHeight) {return;}
             
             /**
              * Resets global variables.
