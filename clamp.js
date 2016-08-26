@@ -19,7 +19,7 @@
             win = window,
             opt = {
                 clamp:              options.clamp || 2,
-                useNativeClamp:     typeof(options.useNativeClamp) != 'undefined' ? options.useNativeClamp : true,
+                useNativeClamp:     typeof(options.useNativeClamp) !== 'undefined' ? options.useNativeClamp : true,
                 splitOnChars:       options.splitOnChars || ['.', '-', '–', '—', ' '], //Split on sentences (periods), hypens, en-dashes, em-dashes, and words (spaces).
                 animate:            options.animate || false,
                 truncationChar:     options.truncationChar || '…',
@@ -29,11 +29,11 @@
             sty = element.style,
             originalText = element.innerHTML,
 
-            supportsNativeClamp = typeof(element.style.webkitLineClamp) != 'undefined',
+            supportsNativeClamp = typeof(element.style.webkitLineClamp) !== 'undefined',
             clampValue = opt.clamp,
             isCSSValue = clampValue.indexOf && (clampValue.indexOf('px') > -1 || clampValue.indexOf('em') > -1),
             truncationHTMLContainer;
-            
+
         if (opt.truncationHTML) {
             truncationHTMLContainer = document.createElement('span');
             truncationHTMLContainer.innerHTML = opt.truncationHTML;
@@ -54,19 +54,34 @@
                     this.el = el;
                     this.getPropertyValue = function(prop) {
                         var re = /(\-([a-z]){1})/g;
-                        if (prop == 'float') prop = 'styleFloat';
+                        if (prop === 'float') {
+                          prop = 'styleFloat';
+                        }
                         if (re.test(prop)) {
                             prop = prop.replace(re, function () {
                                 return arguments[2].toUpperCase();
                             });
                         }
                         return el.currentStyle && el.currentStyle[prop] ? el.currentStyle[prop] : null;
-                    }
+                    };
                     return this;
-                }
+                };
             }
 
             return win.getComputedStyle(elem, null).getPropertyValue(prop);
+        }
+
+        /**
+         * Returns the line-height of an element as an integer.
+         */
+        function getLineHeight(elem) {
+            var lh = computeStyle(elem, 'line-height');
+            if (lh === 'normal') {
+                // Normal line heights vary from browser to browser. The spec recommends
+                // a value between 1.0 and 1.2 of the font size. Using 1.1 to split the diff.
+                lh = parseInt(computeStyle(elem, 'font-size')) * 1.2;
+            }
+            return parseInt(lh);
         }
 
         /**
@@ -89,26 +104,12 @@
             return lineHeight * clmp;
         }
 
-        /**
-         * Returns the line-height of an element as an integer.
-         */
-        function getLineHeight(elem) {
-            var lh = computeStyle(elem, 'line-height');
-            if (lh == 'normal') {
-                // Normal line heights vary from browser to browser. The spec recommends
-                // a value between 1.0 and 1.2 of the font size. Using 1.1 to split the diff.
-                lh = parseInt(computeStyle(elem, 'font-size')) * 1.2;
-            }
-            return parseInt(lh);
-        }
-
-
 // MEAT AND POTATOES (MMMM, POTATOES...) ______________________________________
         var splitOnChars = opt.splitOnChars.slice(0),
             splitChar = splitOnChars[0],
             chunks,
             lastChunk;
-        
+
         /**
          * Gets an element's last child. That may be another node or a node's contents.
          */
@@ -118,7 +119,7 @@
                 return getLastChild(Array.prototype.slice.call(elem.children).pop());
             }
             //This is the absolute last child, a text node, but something's wrong with it. Remove it and keep trying
-            else if (!elem.lastChild || !elem.lastChild.nodeValue || elem.lastChild.nodeValue == '' || elem.lastChild.nodeValue == opt.truncationChar) {
+            else if (!elem.lastChild || !elem.lastChild.nodeValue || elem.lastChild.nodeValue === '' || elem.lastChild.nodeValue === opt.truncationChar) {
                 elem.lastChild.parentNode.removeChild(elem.lastChild);
                 return getLastChild(element);
             }
@@ -127,14 +128,18 @@
                 return elem.lastChild;
             }
         }
-        
+
         /**
          * Removes one character at a time from the text until its width or
          * height is beneath the passed-in max param.
          */
-        function truncate(target, maxHeight) {
+         function applyEllipsis(elem, str) {
+             elem.nodeValue = str + opt.truncationChar;
+         }
+
+         function truncate(target, maxHeight) {
             if (!maxHeight) {return;}
-            
+
             /**
              * Resets global variables.
              */
@@ -144,9 +149,9 @@
                 chunks = null;
                 lastChunk = null;
             }
-            
+
             var nodeValue = target.nodeValue.replace(opt.truncationChar, '');
-            
+
             //Grab the next chunks
             if (!chunks) {
                 //If there are more characters to try, grab the next one
@@ -157,10 +162,10 @@
                 else {
                     splitChar = '';
                 }
-                
+
                 chunks = nodeValue.split(splitChar);
             }
-            
+
             //If there are chunks left to remove, remove the last one and see if
             // the nodeValue fits.
             if (chunks.length > 1) {
@@ -173,7 +178,7 @@
             else {
                 chunks = null;
             }
-            
+
             //Insert the custom HTML before the truncation character
             if (truncationHTMLContainer) {
                 target.nodeValue = target.nodeValue.replace(opt.truncationChar, '');
@@ -185,7 +190,7 @@
                 //It fits
                 if (element.clientHeight <= maxHeight) {
                     //There's still more characters to try splitting on, not quite done yet
-                    if (splitOnChars.length >= 0 && splitChar != '') {
+                    if (splitOnChars.length >= 0 && splitChar !== '') {
                         applyEllipsis(target, chunks.join(splitChar) + splitChar + lastChunk);
                         chunks = null;
                     }
@@ -199,14 +204,14 @@
             else {
                 //No valid chunks even when splitting by letter, time to move
                 //on to the next node
-                if (splitChar == '') {
+                if (splitChar === '') {
                     applyEllipsis(target, '');
                     target = getLastChild(element);
-                    
+
                     reset();
                 }
             }
-            
+
             //If you get here it means still too big, let's keep truncating
             if (opt.animate) {
                 setTimeout(function() {
@@ -217,15 +222,11 @@
                 return truncate(target, maxHeight);
             }
         }
-        
-        function applyEllipsis(elem, str) {
-            elem.nodeValue = str + opt.truncationChar;
-        }
 
 
 // CONSTRUCTOR ________________________________________________________________
 
-        if (clampValue == 'auto') {
+        if (clampValue === 'auto') {
             clampValue = getMaxLines();
         }
         else if (isCSSValue) {
@@ -250,11 +251,11 @@
                 clampedText = truncate(getLastChild(element), height);
             }
         }
-        
+
         return {
             'original': originalText,
             'clamped': clampedText
-        }
+        };
     }
 
     window.$clamp = clamp;
