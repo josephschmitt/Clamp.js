@@ -16,7 +16,7 @@
         options = options || {};
 
         var self = this,
-            win = window,
+            win = options.window || window,
             opt = {
                 clamp:              options.clamp || 2,
                 useNativeClamp:     typeof(options.useNativeClamp) != 'undefined' ? options.useNativeClamp : true,
@@ -33,7 +33,7 @@
             clampValue = opt.clamp,
             isCSSValue = clampValue.indexOf && (clampValue.indexOf('px') > -1 || clampValue.indexOf('em') > -1),
             truncationHTMLContainer;
-            
+
         if (opt.truncationHTML) {
             truncationHTMLContainer = document.createElement('span');
             truncationHTMLContainer.innerHTML = opt.truncationHTML;
@@ -108,7 +108,7 @@
             splitChar = splitOnChars[0],
             chunks,
             lastChunk;
-        
+
         /**
          * Gets an element's last child. That may be another node or a node's contents.
          */
@@ -127,14 +127,14 @@
                 return elem.lastChild;
             }
         }
-        
+
         /**
          * Removes one character at a time from the text until its width or
          * height is beneath the passed-in max param.
          */
         function truncate(target, maxHeight) {
             if (!maxHeight) {return;}
-            
+
             /**
              * Resets global variables.
              */
@@ -144,9 +144,9 @@
                 chunks = null;
                 lastChunk = null;
             }
-            
+
             var nodeValue = target.nodeValue.replace(opt.truncationChar, '');
-            
+
             //Grab the next chunks
             if (!chunks) {
                 //If there are more characters to try, grab the next one
@@ -157,10 +157,10 @@
                 else {
                     splitChar = '';
                 }
-                
+
                 chunks = nodeValue.split(splitChar);
             }
-            
+
             //If there are chunks left to remove, remove the last one and see if
             // the nodeValue fits.
             if (chunks.length > 1) {
@@ -173,7 +173,7 @@
             else {
                 chunks = null;
             }
-            
+
             //Insert the custom HTML before the truncation character
             if (truncationHTMLContainer) {
                 target.nodeValue = target.nodeValue.replace(opt.truncationChar, '');
@@ -202,11 +202,11 @@
                 if (splitChar == '') {
                     applyEllipsis(target, '');
                     target = getLastChild(element);
-                    
+
                     reset();
                 }
             }
-            
+
             //If you get here it means still too big, let's keep truncating
             if (opt.animate) {
                 setTimeout(function() {
@@ -217,7 +217,7 @@
                 return truncate(target, maxHeight);
             }
         }
-        
+
         function applyEllipsis(elem, str) {
             elem.nodeValue = str + opt.truncationChar;
         }
@@ -250,7 +250,7 @@
                 clampedText = truncate(getLastChild(element), height);
             }
         }
-        
+
         return {
             'original': originalText,
             'clamped': clampedText
