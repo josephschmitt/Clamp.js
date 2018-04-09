@@ -86,7 +86,7 @@
          */
         function getMaxHeight(clmp) {
             var lineHeight = getLineHeight(element);
-            return lineHeight * clmp;
+            return lineHeight * clmp + (parseInt(getComputedStyle(element).paddingTop.split("px")[0], 10) + parseInt(getComputedStyle(element).paddingBottom.split("px")[0], 10));
         }
 
         /**
