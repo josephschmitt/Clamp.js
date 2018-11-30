@@ -13,6 +13,7 @@
      * @param {Object} options. Options to pass to the clamper.
      */
     function clamp(element, options) {
+        element = (element.length==1)?element[0]:element;
         options = options || {};
 
         var self = this,
